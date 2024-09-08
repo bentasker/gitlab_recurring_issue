@@ -4,6 +4,8 @@ A small cronjob to periodically raise pre-defined Gitlab tickets.
 
 The aim of this script is to fill [a gap](https://gitlab.com/gitlab-org/gitlab/-/issues/15981) in Gitlab's capabilities, by periodically raising tickets for recurring tasks.
 
+Project management can be found [in my Gitlab mirror](https://projects.bentasker.co.uk/gils_projects/project/utilities/gitlab_recurring_issue.html).
+
 ---
 
 ### Pre-Requisites
