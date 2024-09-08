@@ -76,7 +76,7 @@ def shouldRun(ticket, date_matches):
             if e == "run":
                 return True
             # Day of week
-            elif e in [date_matches["DoW"], date_matches["DoWd"]]:
+            elif e in date_matches["dayw_list"]:
                 return True
     
     # We didn't match an every, so check for explicit date matches
@@ -132,6 +132,10 @@ date_matches = {
     "DoW" : now.strftime("%a").lower(),
     "DoWd" : now.strftime("%w"), # 0 Sun - 6 Sat
     "DoM" : now.strftime("%-d"),
+    "dayw_list" : [
+        date_matches["DoW"],
+        date_matches["DoWd"]
+        ]
     "month_list" : [
         now.strftime("%-m"), 
         now.strftime("%b").lower(), 
