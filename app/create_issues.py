@@ -157,6 +157,14 @@ if "tickets" not in CFG:
     print("Error, no ticket templates provided")
     sys.exit(1)
     
+if "gitlab" in CFG:
+    if "url" in CFG["gitlab"]:
+        GITLAB_SERVER = CFG["gitlab"]["url"]
+    if "token" in CFG["gitlab"]:
+        TOKEN_SERVER = CFG["gitlab"]["token"]
+    
+        
+
 
 # Build time constraints for this run
 now = dt.now()
