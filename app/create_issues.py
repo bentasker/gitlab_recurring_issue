@@ -8,6 +8,8 @@ import sys
 import yaml
 
 from datetime import datetime as dt
+from datetime import date
+from datetime import timedelta
 
 def loadConfig(cfg_file):
     with open(cfg_file, 'r') as f:
@@ -99,15 +101,45 @@ def shouldRun(ticket, date_matches):
                 if d == date_matches["DoM"] and m in date_matches["month_list"]:
                         return True
     
+    if "nth" in sched:
+        if "weekday" not in sched["nth"] or "n" not in sched["nth"]:
+            print("Error: nth requires both n and weekday")
+            return False
+        
+        # Turn the weekday value into an integer
+        dow = WEEK.index(sched["nth"]["weekday"].lower())
+        
+        # Calculate the first instance of that weekday
+        n1 = first_dow(int(date_matches["Y"]), int(date_matches["M"]), dow)
+
+        # Now we need to advance that to match `n`. Currently we already have the value
+        # for n = 1, so subtract 1 from n and then multiply by 7 days
+        days = (int(sched["nth"]["n"]) - 1) * 7
+        
+        target_date = n1 + timedelta(days=days)
+        
+        if date_matches["datestr"] == target_date.strftime("%Y-%m-%d"):
+            #print(f'It is the {sched["nth"]["n"]}th {sched["nth"]["weekday"]}') 
+            return True
+    
     # We didn't match anything
     return False
         
+
+def first_dow(year, month, dow):
+    ''' Derived from a Stackoverflow answer: https://stackoverflow.com/a/71688384
+    Credit@ Molomy
+    '''
+    day = ((8 + dow) - date(year, month, 1).weekday()) % 7
+    return date(year, month, day)
+
+
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
 CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
 CFG = loadConfig(CONFIG_FILE)
-
+WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
 
 if TOKEN:
     gl = gitlab.Gitlab(url=GITLAB_SERVER, private_token=TOKEN)
@@ -128,19 +160,22 @@ if "tickets" not in CFG:
 
 # Build time constraints for this run
 now = dt.now()
-week = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+
 
 date_matches = {
+    "datestr" : now.strftime("%Y-%m-%d"),
+    "Y" : now.strftime("%Y"),
+    "M" : now.strftime("%m"),
     "DoW" : now.strftime("%a").lower(),
-    "DoWd" : week.index(now.strftime("%a").lower()), # 0 mon - 6 sun
+    "DoWd" : WEEK.index(now.strftime("%a").lower()), # 0 mon - 6 sun
     "DoM" : now.strftime("%-d"),
     "dayw_list" : [
-        date_matches["DoW"],
-        date_matches["DoWd"]
-        ]
+        now.strftime("%a").lower(),
+        WEEK.index(now.strftime("%a").lower())
+        ],
     "month_list" : [
         now.strftime("%-m"), 
-        now.strftime("%b").lower(), 
+        now.strftime("%b").lower(),
         "*"
         ]
     }

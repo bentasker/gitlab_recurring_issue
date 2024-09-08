@@ -1,5 +1,14 @@
 foo: bar
 tickets:
+   - title: "Test nth Sunday"
+     active: true
+     schedule:
+       nth:
+        n: 2
+        weekday: Sun
+     description: "This is a test issue"
+     assignee: btasker
+     labels: ["task", "foobar"]
    - title: "Check Softener Salt"
      active: false
      schedule:
@@ -69,3 +78,4 @@ tickets:
      description: "This is a test issue"
      assignee: btasker
      labels: ["task", "foobar"]
+
