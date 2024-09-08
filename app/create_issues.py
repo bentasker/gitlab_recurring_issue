@@ -17,6 +17,31 @@ def loadConfig(cfg_file):
     return cfg
 
 
+def createTicket(ticket):
+    ''' Create a Gitlab ticket based on a provided dict
+    '''
+    
+    # Get a project by name and namespace
+    project = gl.projects.get(ticket['project'])
+
+    # Create the ticket
+    issue = project.issues.create({
+            'title': ticket['title'],
+            'description': ticket['description']
+        })
+
+    issue.labels = ticket['labels'] if "labels" in ticket else []
+
+    if "assignee" in ticket and len(ticket['assignee']) > 0:
+        # Get details of the user we want to assign to
+        user = gl.users.list(username=ticket['assignee'])[0]
+        if user:
+            issue.assignee_ids = [user.id]            
+
+    # Save any changes
+    issue.save()
+    print(issue)
+    
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
@@ -29,37 +54,25 @@ if TOKEN:
     try:
         gl.auth()
     except Exception as e:
-        print(f"Error, authentication failed: ${e}")
+        print(f"Error, authentication failed: {e}")
         sys.exit(1)
 else:
     gl = gitlab.Gitlab(url=GITLAB_SERVER)
     
     
+
+if "tickets" not in CFG:
+    print("Error, no ticket templates provided")
+    sys.exit(1)
     
-
     
+for ticket in CFG["tickets"]:
+    if "active" in ticket and not ticket["active"]:
+        # It's disabled, skip
+        continue
+    
+    try:
+        createTicket(ticket)
+    except Exception as e:
+        print(f"Error creating ticket: {e}")
 
-
-# Get a project by name and namespace
-#project_name_with_namespace = "utilities/gitlab_recurring_issue"
-project_name_with_namespace = "misc/test_proj"
-project = gl.projects.get(project_name_with_namespace)
-
-# Get the issues
-project_issues = project.issues.list()
-
-# Get details of the user we want to assign to
-user = gl.users.list(username='btasker')[0]
-
-print(user)
-
-issue = project.issues.create({'title': 'I have a bug',
-                               'description': 'Something useful here'
-                                   })
-
-print(issue)
-issue.labels = ["Bug"]
-issue.assignee_ids = [user.id]
-
-issue.save()
-print(issue)

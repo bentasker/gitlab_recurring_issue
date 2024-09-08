@@ -1,6 +1,7 @@
 foo: bar
 tickets:
    - title: "Check Softener Salt"
+     active: false
      schedule:
         day: 1
         month: "*"
@@ -9,10 +10,19 @@ tickets:
      assignee: btasker
      labels: ["task"]
    - title: "Worm Dogs"
+     active: false
      schedule:
        every: 4 weeks
      description: "Slip the dogs a worming tablet"
      project: jira-projects/HOME
      assignee: btasker
      labels: ["task", "pets"]
+   - title: "Test Issue"
+     active: true
+     schedule:
+       every: 4 weeks
+     description: "This is a test issue"
+     project: misc/test_proj
+     assignee: btasker
+     labels: ["task", "foobar"]
 
