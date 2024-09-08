@@ -153,6 +153,12 @@ CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
 CFG = loadConfig(CONFIG_FILE)
 WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
 
+if "gitlab" in CFG:
+    if "url" in CFG["gitlab"]:
+        GITLAB_SERVER = CFG["gitlab"]["url"]
+    if "token" in CFG["gitlab"]:
+        TOKEN_SERVER = CFG["gitlab"]["token"]
+
 if TOKEN:
     gl = gitlab.Gitlab(url=GITLAB_SERVER, private_token=TOKEN)
     try:
@@ -169,11 +175,7 @@ if "tickets" not in CFG:
     print("Error, no ticket templates provided")
     sys.exit(1)
     
-if "gitlab" in CFG:
-    if "url" in CFG["gitlab"]:
-        GITLAB_SERVER = CFG["gitlab"]["url"]
-    if "token" in CFG["gitlab"]:
-        TOKEN_SERVER = CFG["gitlab"]["token"]
+
     
         
 
@@ -213,5 +215,5 @@ for ticket in CFG["tickets"]:
             # Temporary: we won't print routinely
             print(f"Skipping {ticket}")
     except Exception as e:
-        print(f"Error creating ticket: {e}")
+        print(f"Error creating ticket: {e} ({ticket})")
 
