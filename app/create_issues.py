@@ -139,12 +139,34 @@ def shouldRun(ticket, date_matches):
         
 
 def first_dow(year, month, dow):
-    ''' Derived from a Stackoverflow answer: https://stackoverflow.com/a/71688384
-    Credit@ Molomy
+    ''' Calculate the date of the first x-day of the month
+    where x is in the range 0 (mon) - 6 (sun)
     '''
-    day = ((8 + dow) - date(year, month, 1).weekday()) % 7
-    return date(year, month, day)
+    
+    # Do we need to convert a name to an integer?
+    if not isinstance(dow, int):
+        dow = WEEK.index(dow.lower())
 
+    # Get the date of the 1st day of that month
+    d1 = dt(year, month, 1)
+    
+    # Work out what day the 1st fell on
+    # and subtract that from the requested day 
+    # i.e. if the 1st was a tues and we requested 
+    # Weds we'll subtract 1 from 2
+    off = dow - d1.weekday()
+    
+    # Check if the offset went negative
+    if off < 0:
+        # It did - so the first day of the 
+        # month occurred later in the week than 
+        # the requested day
+        # bump forward a week
+        off += 7
+        
+    # Add the offset to the start of the month
+    d2 = d1 + timedelta(off)
+    return d2
 
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
