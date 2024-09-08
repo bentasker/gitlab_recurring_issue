@@ -1,0 +1,70 @@
+# Create the token first
+# kubectl create secret generic gitlab-auth --from-literal=token=<my token>
+
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gitlab-recurring-issues
+spec:
+  schedule: "30 5 * * *"
+  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+        template:
+            spec:
+                restartPolicy: Never
+                containers:
+                - name: gitlab-recurring
+                  image: ghcr.io/bentasker/gitlab_recurring_issue:0.1
+                  imagePullPolicy: IfNotPresent
+                  volumeMounts:
+                  - mountPath: /config.yml
+                    name: configfile
+                    subPath: config.yml
+                  env:
+                  - name: GITLAB_TOKEN
+                    valueFrom: 
+                        secretKeyRef:
+                            name: "gitlab-auth"
+                            key: token
+                volumes:
+                - name: configfile
+                  configMap:
+                    name: gitlab-recurring-issues
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-recurring-issues
+data:
+  config.yml: |
+    gitlab:
+        url: https://gitlab.example.com
+    tickets:
+      - title: "Test nth sunday"
+        active: true
+        schedule:
+            nth:
+                n: 2
+                weekday: Sun
+        project: misc/test_proj
+        description: "This is a test issue"
+        assignee: ben
+        labels: ["task", "foobar"]
+        
+      - title: "Check Softener Salt"
+        active: true
+        schedule:
+            day: 8
+            month: "*"
+        description: "Check whether the softener needs more salt adding"
+        project: misc/test_proj
+        assignee: ben
+        labels: ["task"]
+
+    

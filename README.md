@@ -154,7 +154,7 @@ docker run --rm \
 -e GITLAB_TOKEN="<my token>" \
 -e GITLAB_SERVER="https://gitlab.example.com" \
 -v $PWD/examples/example_config.yml:/config.yml \
-<image>
+ghcr.io/bentasker/gitlab_recurring_issue:0.1
 ```
 
 Note: if the config needs to be mounted elsewhere, the location can be provided in env var `CONFIG_FILE`
@@ -166,7 +166,11 @@ Note: if the config needs to be mounted elsewhere, the location can be provided 
 
 The script doesn't provide a means for running itself - you'll need to use `cron` or `CronJob` to invoke it once a day.
 
+Within this repo, there's an [example Kubernetes CronJob definition](examples/kubernetes.yml).
+
+
 Because the script is stateless, it doesn't know when you last ran it, so if you run it more than once a day you'll likely get duplicate tickets.
+
 
 ---
 
