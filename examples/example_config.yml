@@ -27,6 +27,15 @@ tickets:
      project: misc/test_proj
      assignee: btasker
      labels: ["task"]
+   - title: "Check Softener Salt 4"
+     active: true
+     schedule:
+        day: 1/3/8
+        month: 1/3/8/9
+     description: "Check whether the softener needs more salt adding"
+     project: misc/test_proj
+     assignee: btasker
+     labels: ["task"]
    - title: "Worm Dogs"
      active: false
      schedule:

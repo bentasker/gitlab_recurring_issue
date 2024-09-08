@@ -78,15 +78,20 @@ def shouldRun(ticket, date_matches):
         day = str(sched["day"]).lower()
         month = str(sched["month"]).lower() if "month" in sched else "*"
         
+        day_list = [day]
+        if "/" in day:
+            day_list = day.split("/")
+        
         # Check whether multiple months have been provided
         month_list = [month]
         if "/" in month:
             # Multiple months have been provided
             month_list = month.split("/")
-            
-        for m in month_list:        
-            if day == date_matches["DoM"] and m in date_matches["month_list"]:
-                    return True
+        
+        for d in day_list:
+            for m in month_list:        
+                if d == date_matches["DoM"] and m in date_matches["month_list"]:
+                        return True
     
     # We didn't match anything
     return False
