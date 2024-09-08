@@ -7,6 +7,7 @@ import os
 import sys
 import yaml
 
+from datetime import datetime as dt
 
 def loadConfig(cfg_file):
     with open(cfg_file, 'r') as f:
@@ -51,6 +52,37 @@ def createTicket(ticket):
     print(f"Created issue {issue.iid} in project {ticket['project']}: {ticket['title']}")
     
     
+def shouldRun(ticket, date_matches):
+    ''' Take a ticket dict and a dict of the current date 
+    in order to evaluate the ticket's schedule and identify
+    whether it should run
+    '''
+    
+    if "schedule" not in ticket:
+        print("Error: ticket has no schedule")
+        return False
+    
+    sched = ticket["schedule"]
+    
+    if "every" in ticket["schedule"]:
+        every = sched["every"].lower()
+        # Check whether we match an every rule
+        if every == "run":
+            return True
+        # Day of week
+        elif every in [date_matches["DoW"], date_matches["DoWd"]]:
+            return True
+    
+    # We didn't match an every, so check for explicit date matches
+    if "day" in sched:
+        day = str(sched["day"]).lower()
+        month = str(sched["month"]).lower() if "month" in sched else "*"
+        if day == date_matches["DoM"] and month in date_matches["month_list"]:
+                return True
+    
+    # We didn't match anything
+    return False
+        
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
@@ -74,14 +106,32 @@ if "tickets" not in CFG:
     print("Error, no ticket templates provided")
     sys.exit(1)
     
-    
+
+# Build time constraints for this run
+now = dt.now()
+date_matches = {
+    "DoW" : now.strftime("%a").lower(),
+    "DoWd" : now.strftime("%w"), # 0 Sun - 6 Sat
+    "DoM" : now.strftime("%-d"),
+    "month_list" : [
+        now.strftime("%-m"), 
+        now.strftime("%b").lower(), 
+        "*"
+        ]
+    }
+
+
 for ticket in CFG["tickets"]:
     if "active" in ticket and not ticket["active"]:
         # It's disabled, skip
         continue
     
     try:
-        createTicket(ticket)
+        if shouldRun(ticket, date_matches):
+            createTicket(ticket)
+        else:
+            # Temporary: we won't print routinely
+            print(f"Skipping {ticket}")
     except Exception as e:
         print(f"Error creating ticket: {e}")
 

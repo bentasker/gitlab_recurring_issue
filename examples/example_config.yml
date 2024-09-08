@@ -3,8 +3,17 @@ tickets:
    - title: "Check Softener Salt"
      active: false
      schedule:
-        day: 1
+        day: 8
         month: "*"
+     description: "Check whether the softener needs more salt adding"
+     project: jira-projects/HOME
+     assignee: btasker
+     labels: ["task"]
+   - title: "Check Softener Salt"
+     active: false
+     schedule:
+        day: 8
+        month: Sep
      description: "Check whether the softener needs more salt adding"
      project: jira-projects/HOME
      assignee: btasker
@@ -20,7 +29,7 @@ tickets:
    - title: "Test Issue"
      active: true
      schedule:
-       every: 4 weeks
+       every: Sun
      description: "This is a test issue"
      project: misc/test_proj
      assignee: btasker
@@ -28,7 +37,7 @@ tickets:
    - title: "Test Broken Issue"
      active: true
      schedule:
-       every: 4 weeks
+       every: run
      description: "This is a test issue"
      assignee: btasker
      labels: ["task", "foobar"]
