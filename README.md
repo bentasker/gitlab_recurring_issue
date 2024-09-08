@@ -162,6 +162,14 @@ Note: if the config needs to be mounted elsewhere, the location can be provided 
 
 ---
 
+### Run Scheduling
+
+The script doesn't provide a means for running itself - you'll need to use `cron` or `CronJob` to invoke it once a day.
+
+Because the script is stateless, it doesn't know when you last ran it, so if you run it more than once a day you'll likely get duplicate tickets.
+
+---
+
 ## License
 
 Copyright (c) 2024 B Tasker
