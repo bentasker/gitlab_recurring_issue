@@ -128,9 +128,11 @@ if "tickets" not in CFG:
 
 # Build time constraints for this run
 now = dt.now()
+week = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+
 date_matches = {
     "DoW" : now.strftime("%a").lower(),
-    "DoWd" : now.strftime("%w"), # 0 Sun - 6 Sat
+    "DoWd" : week.index(now.strftime("%a").lower()), # 0 mon - 6 sun
     "DoM" : now.strftime("%-d"),
     "dayw_list" : [
         date_matches["DoW"],
