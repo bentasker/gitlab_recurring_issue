@@ -44,7 +44,7 @@ Ticket templates consist of a few items
 * Labels to apply (optional)
 * Issue assignee (optional)
 
-They should be placed under the `tickets` attribute in config
+They should be placed under the `tickets` attribute in the config file
 
 
 ### Schedule
@@ -53,10 +53,11 @@ Tickets are created when a run aligns with the constraints provided within the `
 
 There are a number of supported scheduling methodologies, but scheduling is currently entirely stateless, so it's not possible to specify "every n days"
 
+---
 
 #### Day & Month
 
-It's possible to schedule a ticket to be created on a specific day of a month:
+It's possible to schedule a ticket to be created on a specific day of a month (using a short name or a month number):
 ```yaml
 schedule:
   day: 4
@@ -77,6 +78,8 @@ schedule:
   month: 2/mar/Sep
 ```
 
+---
+
 #### Every scheduling
 
 An `every` schedule can be used to simply provide a weekday
@@ -89,10 +92,13 @@ Note: you can also provide an integer, where 0 is Monday and 6 is Sunday.
 
 The `every` attribute also accepts the value `run` - if this is present, the ticket will be raised every time the script is invoked.
 
+---
 
 #### `n`th Day Scheduling
 
-The script support `n`th day scheduling, so you can specify that a ticket should be raised on the 2nd Sunday of each month:
+The script support `n`th day scheduling.
+
+For example, to specify that a ticket should be raised on the 2nd Sunday of each month:
 ```yaml
 schedule:
   nth:
