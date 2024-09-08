@@ -6,10 +6,22 @@
 import gitlab
 import os
 import sys
+import yaml
+
+
+def loadConfig(cfg_file):
+    with open(cfg_file, 'r') as f:
+        cfg = yaml.safe_load(f)
+
+    # TODO: populate defaults
+    return cfg
+
 
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
+CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
+CFG = loadConfig(CONFIG_FILE)
 
 
 if TOKEN:
@@ -23,6 +35,10 @@ else:
     gl = gitlab.Gitlab(url=GITLAB_SERVER)
     
     
+    
+
+    
+
 
 # Get a project by name and namespace
 #project_name_with_namespace = "utilities/gitlab_recurring_issue"

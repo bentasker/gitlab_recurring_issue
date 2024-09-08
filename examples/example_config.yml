@@ -1,0 +1,18 @@
+foo: bar
+tickets:
+   - title: "Check Softener Salt"
+     schedule:
+        day: 1
+        month: "*"
+     description: "Check whether the softener needs more salt adding"
+     project: jira-projects/HOME
+     assignee: btasker
+     labels: ["task"]
+   - title: "Worm Dogs"
+     schedule:
+       every: 4 weeks
+     description: "Slip the dogs a worming tablet"
+     project: jira-projects/HOME
+     assignee: btasker
+     labels: ["task", "pets"]
+
