@@ -66,12 +66,18 @@ def shouldRun(ticket, date_matches):
     
     if "every" in ticket["schedule"]:
         every = sched["every"].lower()
-        # Check whether we match an every rule
-        if every == "run":
-            return True
-        # Day of week
-        elif every in [date_matches["DoW"], date_matches["DoWd"]]:
-            return True
+        every_list = [every]
+        
+        if "/" in every:
+            every_list = every.split("/")
+        
+        for e in every_list:
+            # Check whether we match an every rule
+            if e == "run":
+                return True
+            # Day of week
+            elif e in [date_matches["DoW"], date_matches["DoWd"]]:
+                return True
     
     # We didn't match an every, so check for explicit date matches
     if "day" in sched:
