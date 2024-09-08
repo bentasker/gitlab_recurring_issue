@@ -2,7 +2,6 @@
 #
 # 
 
-
 import gitlab
 import os
 import sys
@@ -21,7 +20,16 @@ def createTicket(ticket):
     ''' Create a Gitlab ticket based on a provided dict
     '''
     
+    if "title" not in ticket or "description" not in ticket:
+        print("Error, title and description must be provided")
+        return False
+    
+    
     # Get a project by name and namespace
+    if "project" not in ticket or len(ticket['project']) < 1:
+        print(f"Error, Project not provided for: {ticket['title']}")
+        return False
+    
     project = gl.projects.get(ticket['project'])
 
     # Create the ticket
@@ -40,7 +48,8 @@ def createTicket(ticket):
 
     # Save any changes
     issue.save()
-    print(issue)
+    print(f"Created issue {issue.iid} in project {ticket['project']}: {ticket['title']}")
+    
     
 
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")

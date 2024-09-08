@@ -25,4 +25,10 @@ tickets:
      project: misc/test_proj
      assignee: btasker
      labels: ["task", "foobar"]
-
+   - title: "Test Broken Issue"
+     active: true
+     schedule:
+       every: 4 weeks
+     description: "This is a test issue"
+     assignee: btasker
+     labels: ["task", "foobar"]
