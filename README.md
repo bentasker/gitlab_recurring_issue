@@ -163,6 +163,8 @@ Note: if the config needs to be mounted elsewhere, the location can be provided 
 
 The environment variable `DRY_RUN` can be used to run without writing into Gitlab - this will simply print details for tickets who's schedule matches the run time.
 
+The environment variable `FORCE` can be used to ignore schedule information: when set to `true` all configured tickets will be raised (or, output if `DRY_RUN` is also active).
+
 ---
 
 ### Run Scheduling
