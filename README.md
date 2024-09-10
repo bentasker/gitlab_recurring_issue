@@ -151,6 +151,30 @@ The `due_in_days` attribute is optional, but when present is used to calculate t
 
 ---
 
+### Description Files
+
+Although ticket descriptions can be set in YAML (via `description`), it may sometimes be desirable to provide descriptions that don't fit well into YAML.
+
+The system is able to read descriptions from a file defined in `description_file` (if set, this will override `description`). 
+
+Files should be stored in the template directory (the location of this is set in env var `TEMPLATE_DIR`, which defaults to `/templates`) and **must** have the suffix `.template`.
+
+For example to use `/templates/test.template` to populate a ticket description:
+
+```yaml
+   - title: "Check tyre pressures"
+     active: true
+     project: home/vehicles
+     schedule:
+       every: Sunday
+     description_file: test.template
+     assignee: btasker
+     labels: ["task", "car"]
+```
+
+
+---
+
 ### Invocation
 
 The script is intended to be run from within a container:

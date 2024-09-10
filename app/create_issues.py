@@ -39,8 +39,7 @@ def createTicket(ticket):
         print("Error, title must be provided")
         return False
     
-    
-     if "description" not in ticket and "description_file" not in ticket:
+    if "description" not in ticket and "description_file" not in ticket:
         print("Error, description must be provided")
         return False
     
@@ -48,6 +47,16 @@ def createTicket(ticket):
         print(f"Error, Project not provided for: {ticket['title']}")
         return False
     
+    if "description_file" in ticket:
+        # Load the file and set the description
+        if not ticket["description_file"].endswith(".template"):
+            ticket["description_file"] = f'{ticket["description_file"]}.template'
+            
+        ticket['description'] = loadDescription(ticket["description_file"])
+        if not ticket['description']:
+            print(f'Error, unable to load {ticket["description_file"]}')
+            return False
+          
     # Check we can access the project
     project = gl.projects.get(ticket['project'])
     if not project:
@@ -102,6 +111,17 @@ def dry_run_print(iss_dict, ticket, labels):
     if "due_date" in iss_dict:
         print(f"Due date: {iss_dict['due_date']}")
 
+
+def loadDescription(desc_file):
+    ''' Attempt to load a description file from the template dir
+    '''
+    
+    try:
+        with open(os.path.join(TEMPLATE_DIR, f"{desc_file}"), 'r') as f:
+            return f.read()
+    except:
+        return False
+    
     
 def shouldRun(ticket, date_matches):
     ''' Take a ticket dict and a dict of the current date 
@@ -209,6 +229,7 @@ def first_dow(year, month, dow):
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
 CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
+TEMPLATE_DIR = os.getenv("TEMPLATE_DIR", "/templates")
 DRY_RUN = (os.getenv("DRY_RUN", "false").lower() == "true")
 FORCE_RUN = (os.getenv("FORCE", "false").lower() == "true")
 CFG = loadConfig(CONFIG_FILE)
