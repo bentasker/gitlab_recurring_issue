@@ -35,17 +35,24 @@ def createTicket(ticket):
     ''' Create a Gitlab ticket based on a provided dict
     '''
     
-    if "title" not in ticket or "description" not in ticket:
-        print("Error, title and description must be provided")
+    if "title" not in ticket:
+        print("Error, title must be provided")
         return False
     
     
-    # Get a project by name and namespace
+     if "description" not in ticket and "description_file" not in ticket:
+        print("Error, description must be provided")
+        return False
+    
     if "project" not in ticket or len(ticket['project']) < 1:
         print(f"Error, Project not provided for: {ticket['title']}")
         return False
     
+    # Check we can access the project
     project = gl.projects.get(ticket['project'])
+    if not project:
+        print(f"Error: invalid project")
+        return False
 
     labels = CFG['labels'] if "labels" in CFG else []
     if "labels" in ticket:
