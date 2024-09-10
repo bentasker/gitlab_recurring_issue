@@ -25,6 +25,8 @@ spec:
                     name: configfile
                     subPath: config.yml
                   env:
+                  - name: DRY_RUN
+                    value: "false"
                   - name: GITLAB_TOKEN
                     valueFrom: 
                         secretKeyRef:

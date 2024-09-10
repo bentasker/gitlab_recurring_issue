@@ -47,15 +47,19 @@ def createTicket(ticket):
     
     project = gl.projects.get(ticket['project'])
 
+    labels = CFG['labels'] if "labels" in CFG else []
+    if "labels" in ticket:
+        labels = labels + ticket["labels"]
+
+
+    if DRY_RUN:
+        return dry_run_print(ticket, labels)
+
     # Create the ticket
     issue = project.issues.create({
             'title': ticket['title'],
             'description': ticket['description']
         })
-
-    labels = CFG['labels'] if "labels" in CFG else []
-    if "labels" in ticket:
-        labels = labels + ticket["labels"]
 
     issue.labels = list(set(labels))
 
@@ -68,6 +72,19 @@ def createTicket(ticket):
     # Save any changes
     issue.save()
     print(f"Created issue {issue.iid} in project {ticket['project']}: {ticket['title']}")
+    
+
+def dry_run_print(ticket, labels):
+    ''' Print out details of the ticket that we would have created
+    '''
+    
+    print((
+        "----\n"
+        f'project: {ticket["project"]}\n'
+        f'title: {ticket["title"]}\n'
+        f'labels: {labels}\n'
+        f'description: {ticket["description"]} \n'
+        ))
     
     
 def shouldRun(ticket, date_matches):
@@ -176,8 +193,12 @@ def first_dow(year, month, dow):
 GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
 CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
+DRY_RUN = (os.getenv("DRY_RUN", "false").lower() == "true")
 CFG = loadConfig(CONFIG_FILE)
 WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+
+if DRY_RUN:
+    print("\n".join(["Dry Run Mode","==============",""]))
 
 if "gitlab" in CFG:
     if "url" in CFG["gitlab"]:
@@ -202,9 +223,6 @@ if "tickets" not in CFG:
     sys.exit(1)
     
 
-    
-        
-
 
 # Build time constraints for this run
 now = dt.now()
@@ -228,6 +246,8 @@ date_matches = {
         ]
     }
 
+if DRY_RUN:
+    print(f"Calculated Dates: {date_matches}\n")
 
 for ticket in CFG["tickets"]:
     if "active" in ticket and not ticket["active"]:

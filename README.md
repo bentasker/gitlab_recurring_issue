@@ -161,6 +161,7 @@ ghcr.io/bentasker/gitlab_recurring_issue:0.1
 
 Note: if the config needs to be mounted elsewhere, the location can be provided in env var `CONFIG_FILE`
 
+The environment variable `DRY_RUN` can be used to run without writing into Gitlab - this will simply print details for tickets who's schedule matches the run time.
 
 ---
 
