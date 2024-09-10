@@ -47,6 +47,7 @@ data:
   config.yml: |
     gitlab:
         url: https://gitlab.example.com
+    labels: ["RecurringIssue"]
     tickets:
       - title: "Test nth sunday"
         active: true
@@ -61,6 +62,7 @@ data:
         
       - title: "Check Softener Salt"
         active: true
+        due_in_days: 7
         schedule:
             day: 8
             month: "*"
