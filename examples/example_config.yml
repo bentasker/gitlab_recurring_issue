@@ -4,6 +4,7 @@ labels: ["RecurringIssue"]
 tickets:
    - title: "Test Issue"
      active: true
+     due_in_days: 7
      schedule:
        every: run
      description: "This is a test issue"

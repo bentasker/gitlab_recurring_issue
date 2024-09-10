@@ -51,15 +51,21 @@ def createTicket(ticket):
     if "labels" in ticket:
         labels = labels + ticket["labels"]
 
-
-    if DRY_RUN:
-        return dry_run_print(ticket, labels)
-
-    # Create the ticket
-    issue = project.issues.create({
+    iss_dict = {
             'title': ticket['title'],
             'description': ticket['description']
-        })
+    }
+    
+    if "due_in_days" in ticket:
+        due = date_matches["now"] + timedelta(ticket['due_in_days'])
+        iss_dict["due_date"] = due.strftime("%Y-%m-%d")
+
+    if DRY_RUN:
+        return dry_run_print(iss_dict, ticket, labels)
+
+
+    # Create the ticket
+    issue = project.issues.create(iss_dict)
 
     issue.labels = list(set(labels))
 
@@ -74,18 +80,21 @@ def createTicket(ticket):
     print(f"Created issue {issue.iid} in project {ticket['project']}: {ticket['title']}")
     
 
-def dry_run_print(ticket, labels):
+def dry_run_print(iss_dict, ticket, labels):
     ''' Print out details of the ticket that we would have created
     '''
     
     print((
         "----\n"
         f'project: {ticket["project"]}\n'
-        f'title: {ticket["title"]}\n'
+        f'title: {iss_dict["title"]}\n'
         f'labels: {labels}\n'
-        f'description: {ticket["description"]} \n'
+        f'description: {iss_dict["description"]} \n'
         ))
     
+    if "due_date" in iss_dict:
+        print(f"Due date: {iss_dict['due_date']}")
+
     
 def shouldRun(ticket, date_matches):
     ''' Take a ticket dict and a dict of the current date 
@@ -247,7 +256,8 @@ date_matches = {
         now.strftime("%-m"), 
         now.strftime("%b").lower(),
         "*"
-        ]
+        ],
+    "now" : now
     }
 
 if DRY_RUN:

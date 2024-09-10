@@ -129,6 +129,7 @@ tickets:
      labels: ["task", "food"]
    - title: "File Tax Return"
      active: true
+     due_in_days: 30
      project: home/finances
      schedule:
        day: 1
@@ -145,6 +146,8 @@ tickets:
      assignee: btasker
      labels: ["task", "car"]
 ```
+
+The `due_in_days` attribute is optional, but when present is used to calculate the issue due date. The value is the number of days from the date the ticket is raised.
 
 ---
 
