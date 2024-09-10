@@ -57,7 +57,7 @@ def createTicket(ticket):
     if "labels" in ticket:
         labels = labels + ticket["labels"]
 
-    issue.labels = labels
+    issue.labels = list(set(labels))
 
     if "assignee" in ticket and len(ticket['assignee']) > 0:
         # Get details of the user we want to assign to
