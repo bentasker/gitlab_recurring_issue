@@ -53,7 +53,11 @@ def createTicket(ticket):
             'description': ticket['description']
         })
 
-    issue.labels = ticket['labels'] if "labels" in ticket else []
+    labels = CFG['labels'] if "labels" in CFG else []
+    if "labels" in ticket:
+        labels = labels + ticket["labels"]
+
+    issue.labels = labels
 
     if "assignee" in ticket and len(ticket['assignee']) > 0:
         # Get details of the user we want to assign to
