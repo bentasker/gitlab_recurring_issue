@@ -194,11 +194,15 @@ GITLAB_SERVER = os.getenv("GITLAB_SERVER", "https://gitlab.com")
 TOKEN = os.getenv("GITLAB_TOKEN", False)
 CONFIG_FILE = os.getenv("CONFIG_FILE", "/config.yml")
 DRY_RUN = (os.getenv("DRY_RUN", "false").lower() == "true")
+FORCE_RUN = (os.getenv("FORCE", "false").lower() == "true")
 CFG = loadConfig(CONFIG_FILE)
 WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
 
 if DRY_RUN:
     print("\n".join(["Dry Run Mode","==============",""]))
+
+if FORCE_RUN:
+    print("\n".join(["Warn: Force run enabled - schedules will be ignored",""]))
 
 if "gitlab" in CFG:
     if "url" in CFG["gitlab"]:
@@ -255,7 +259,7 @@ for ticket in CFG["tickets"]:
         continue
     
     try:
-        if shouldRun(ticket, date_matches):
+        if FORCE_RUN or shouldRun(ticket, date_matches):
             createTicket(ticket)
         else:
             # Temporary: we won't print routinely
