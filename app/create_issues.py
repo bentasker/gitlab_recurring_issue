@@ -233,7 +233,7 @@ TEMPLATE_DIR = os.getenv("TEMPLATE_DIR", "/templates")
 DRY_RUN = (os.getenv("DRY_RUN", "false").lower() == "true")
 FORCE_RUN = (os.getenv("FORCE", "false").lower() == "true")
 CFG = loadConfig(CONFIG_FILE)
-WEEK = ["mon", "tue", "wed", "thur", "fri", "sat", "sun"]
+WEEK = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
 if DRY_RUN:
     print("\n".join(["Dry Run Mode","==============",""]))
